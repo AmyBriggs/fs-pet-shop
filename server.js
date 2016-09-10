@@ -20,8 +20,8 @@ app.get('/pets', function(req, res) {
     var pets = JSON.parse(petsJSON);
 
     res.send(pets);
-  });
-});
+  })
+})
 
 app.get('/pets/:id', function(req, res) {
   fs.readFile(petsPath, 'utf8', function(err, petsJSON) {
@@ -39,8 +39,8 @@ app.get('/pets/:id', function(req, res) {
 
     res.set('Content-Type', 'text/plain');
     res.send(pets[id]);
-  })
-  })
+  });
+});
 
 app.use(function(req, res) {
   res.sendStatus(404);
