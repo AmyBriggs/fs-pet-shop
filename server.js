@@ -12,10 +12,11 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');
 // var router = express.Router();
 
-app.use(bodyParser.urlencoded({extended: true}));
 app.disable('x-powered-by');
+
 app.use(morgan('short'));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true}));
 
 app.get('/pets', function(req, res) {
   fs.readFile(petsPath, 'utf8', function(err, petsJSON) {
@@ -44,14 +45,14 @@ app.get('/pets/:id', function(req, res) {
       return res.sendStatus(404);
     }
 
-    res.set('Content-Type', 'text/plain');
+    // res.set('Content-Type', 'text/plain');
     res.send(pets[id]);
   });
 });
 
 app.post('/pets', function(req, res) {
-  fs.readFile(petsPath, 'utf8', function(readErr, petsJSON) {
-    if (readErr) {
+  fs.readFile(petsPath, 'utf8', function(err, petsJSON) {
+    if (err) {
       console.error(err.stack);
       return res.sendStatus(500);
     }
@@ -59,16 +60,16 @@ app.post('/pets', function(req, res) {
 
 // I need to define the variables that make up a new pet: age, kind, and
 // name
-var age = parseInt(req.body.age)
-var kind = req.body.kind
-var name = req.body.name
+// var age = parseInt(req.body.age)
+// var kind = req.body.kind
+// var name = req.body.name
 var pets = JSON.parse(petsJSON);
 // var petsJSON = req.body.pet;
 //
     var pet = {
-      age: age,
-      kind: kind,
-      name: name
+      age: parseInt(req.body.age),
+      kind: req.body.kind,
+      name: req.body.name,
     }
 
     if (!pet) {
@@ -87,7 +88,7 @@ var pets = JSON.parse(petsJSON);
       }
 
       res.set('Content-Type', 'text/plain');
-      res.send(pets);
+      res.send(pet);
     });
   });
 });
@@ -106,13 +107,15 @@ app.put('/pets/:id', function(req, res) {
       return res.sendStatus(404);
     }
 
-    var pet = req.body.name;
+    // var pet = req.body.name;
 
     if (!pet) {
       return res.sendStatus(400);
     }
 
     pets[id] = pet;
+
+    // kind if statement
 
     var newPetsJSON = JSON.stringify(pets);
 
@@ -157,9 +160,9 @@ app.delete('/pets/:id', function(req, res) {
   });
 });
 
-app.use(function(req, res) {
-  res.sendStatus(404);
-});
+// app.use(function(req, res) {
+//   res.sendStatus(404);
+// });
 
 app.listen(port, function() {
   console.log('Listening on port', port);
