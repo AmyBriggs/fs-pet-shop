@@ -134,8 +134,8 @@ app.put('/pets/:id', function(req, res) {
 });
 
 app.delete('/pets/:id', function(req, res) {
-  fs.readFile(petsPath, 'utf8', function(readErr, petsJSON) {
-    if (readErr) {
+  fs.readFile(petsPath, 'utf8', function(err, petsJSON) {
+    if (err) {
       console.error(err.stack);
       return res.sendStatus(500);
     }
@@ -146,6 +146,7 @@ app.delete('/pets/:id', function(req, res) {
     if (id < 0 || id >= pets.length || Number.isNaN(id) ) {
       return res.sendStatus(404);
     }
+
 
     var pet = pets.splice(id, 1)[0];
     var newPetsJSON = JSON.stringify(pets);
