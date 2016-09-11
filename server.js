@@ -8,7 +8,14 @@ var express = require('express');
 var app = express();
 var port = process.env.PORT || 8000;
 
+var morgan = require('morgan');
+var bodyParser = require('body-parser');
+// var router = express.Router();
+
 app.disable('x-powered-by');
+app.use(morgan('short'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/pets', function(req, res) {
   fs.readFile(petsPath, 'utf8', function(err, petsJSON) {
@@ -39,6 +46,114 @@ app.get('/pets/:id', function(req, res) {
 
     res.set('Content-Type', 'text/plain');
     res.send(pets[id]);
+  });
+});
+
+app.post('/pets', function(req, res) {
+  fs.readFile(petsPath, 'utf8', function(readErr, petsJSON) {
+    if (readErr) {
+      console.error(err.stack);
+      return res.sendStatus(500);
+    }
+
+
+// I need to define the variables that make up a new pet: age, kind, and
+// name
+var age = req.body.age
+var kind = req.body.kind
+var name = req.body.name
+var pets = JSON.parse(petsJSON);
+var petsJSON = req.body.pet;
+//
+    var pet = {
+      age: age,
+      kind: kind,
+      name: name
+    }
+
+    if (!pet) {
+      return res.sendStatus(400);
+    }
+
+    pets.push(pet);
+    console.log("new pet added!");
+
+    var newPetsJSON = JSON.stringify(pets);
+
+    fs.writeFile(petsPath, newPetsJSON, function(writeErr) {
+      if (writeErr) {
+        console.error(writeErr.stack);
+        return res.sendStatus(500);
+      }
+
+      res.set('Content-Type', 'text/plain');
+      res.send(pet);
+    });
+  });
+});
+
+app.put('/pets/:id', function(req, res) {
+  fs.readFile(petsPath, 'utf8', function(readErr, petsJSON) {
+    if (readErr) {
+      console.error(err.stack);
+      return res.sendStatus(500);
+    }
+
+    var id = Number.parseInt(req.params.id);
+    var pets = JSON.parse(petsJSON);
+
+    if (id < 0 || id >= pets.length || Number.isNaN(id)) {
+      return res.sendStatus(404);
+    }
+
+    var pet = req.body.name;
+
+    if (!pet) {
+      return res.sendStatus(400);
+    }
+
+    pets[id] = pet;
+
+    var newPetsJSON = JSON.stringify(pets);
+
+    fs.writeFile(petsPath, newPetsJSON, function(writeErr) {
+      if (writeErr) {
+        console.error(err.stack);
+        return res.sendStatus(500);
+      }
+
+      res.set('Content-Type', 'text/plain');
+      res.send(pet);
+    });
+  });
+});
+
+app.delete('/pets/:id', function(req, res) {
+  fs.readFile(petsPath, 'utf8', function(readErr, petsJSON) {
+    if (readErr) {
+      console.error(err.stack);
+      return res.sendStatus(500);
+    }
+
+    var id = Number.parseInt(req.params.id);
+    var pets = JSON.parse(petsJSON);
+
+    if (id < 0 || id >= pets.length || Number.isNaN(id) ) {
+      return res.sendStatus(404);
+    }
+
+    var pet = pets.splice(id, 1)[0];
+    var newPetsJSON = JSON.stringify(pets);
+
+    fs.writeFile(petsPath, newPetsJSON, function(writeErr) {
+      if (writeErr) {
+        console.error(writeErr.stack);
+        return res.sendStatus(500);
+      }
+
+      res.set('Content-Type', 'text/plain');
+      res.send(pet);
+    });
   });
 });
 
