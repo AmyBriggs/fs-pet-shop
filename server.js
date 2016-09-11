@@ -12,10 +12,10 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');
 // var router = express.Router();
 
+app.use(bodyParser.urlencoded({extended: true}));
 app.disable('x-powered-by');
 app.use(morgan('short'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/pets', function(req, res) {
   fs.readFile(petsPath, 'utf8', function(err, petsJSON) {
@@ -59,11 +59,11 @@ app.post('/pets', function(req, res) {
 
 // I need to define the variables that make up a new pet: age, kind, and
 // name
-var age = req.body.age
+var age = parseInt(req.body.age)
 var kind = req.body.kind
 var name = req.body.name
 var pets = JSON.parse(petsJSON);
-var petsJSON = req.body.pet;
+// var petsJSON = req.body.pet;
 //
     var pet = {
       age: age,
@@ -75,7 +75,7 @@ var petsJSON = req.body.pet;
       return res.sendStatus(400);
     }
 
-    pets.push(pet);
+    pets.push(pet)
     console.log("new pet added!");
 
     var newPetsJSON = JSON.stringify(pets);
@@ -87,7 +87,7 @@ var petsJSON = req.body.pet;
       }
 
       res.set('Content-Type', 'text/plain');
-      res.send(pet);
+      res.send(pets);
     });
   });
 });
