@@ -107,7 +107,11 @@ app.put('/pets/:id', function(req, res) {
       return res.sendStatus(404);
     }
 
-    // var pet = req.body.name;
+    var pet = {
+      age: parseInt(req.body.age),
+      kind: req.body.kind,
+      name: req.body.name,
+    }
 
     if (!pet) {
       return res.sendStatus(400);
@@ -115,12 +119,10 @@ app.put('/pets/:id', function(req, res) {
 
     pets[id] = pet;
 
-    // kind if statement
-
     var newPetsJSON = JSON.stringify(pets);
 
-    fs.writeFile(petsPath, newPetsJSON, function(writeErr) {
-      if (writeErr) {
+    fs.writeFile(petsPath, newPetsJSON, function(err) {
+      if (err) {
         console.error(err.stack);
         return res.sendStatus(500);
       }
