@@ -218,3 +218,8 @@ Use an Express router to group and export your resource-specific `/pets` routes 
 ['auth']: https://en.wikipedia.org/wiki/Basic_access_authentication
 ['error-handling']: http://sahatyalkabov.com/jsrecipes/#!/backend/nodejs-error-handling
 ['ryansobol']: https://github.com/ryansobol/eslint-config-ryansobol#language-configuration
+
+
+Link to heroku app:
+
+https://dashboard.heroku.com/apps/amybriggs1-pet-shop
